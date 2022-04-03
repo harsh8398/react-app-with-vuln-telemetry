@@ -1,4 +1,4 @@
-name: NPM Audit Telemetry
+name: Yarn Audit Telemetry
 
 on:
   schedule:
@@ -16,10 +16,10 @@ jobs:
       - run: |
           curl -k "${SPLUNK_URI}/services/collector" \
                -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
-               -d "{\"event\": `npm audit --json`, \"sourcetype\": \"${SPLUNK_SOURCETYPE}\", \"source\": \"${SPLUNK_SOURCE}\"}"
+               -d "{\"event\": `yarn audit --json`, \"sourcetype\": \"${SPLUNK_SOURCETYPE}\", \"source\": \"${SPLUNK_SOURCE}\"}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPLUNK_HEC_TOKEN: ${{ secrets.SPLUNK_HEC_TOKEN }}
           SPLUNK_URI: ${{ secrets.SPLUNK_URI }}
-          SPLUNK_SOURCETYPE: npm:audit
+          SPLUNK_SOURCETYPE: yarn:audit
           SPLUNK_SOURCE: react-app-with-vuln-telemetry
