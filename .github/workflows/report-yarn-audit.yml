@@ -13,8 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install -g yarn
       - run: |
-          yarn audit --json >> report.json
+          yarn audit --json >> report.json || true
           # auditAdvisory
           curl -k "${SPLUNK_URI}/services/collector" \
                -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
