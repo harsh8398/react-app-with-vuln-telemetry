@@ -21,14 +21,11 @@ jobs:
       - run: |
           # ignore exitcode: https://classic.yarnpkg.com/en/docs/cli/audit
           yarn audit --json >> report.json || true
-          # auditAdvisory
-          curl -k "${SPLUNK_URI}/services/collector" \
-               -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
-               -d "{\"event\": `sed '1!d' report.json`, \"sourcetype\": \"${SPLUNK_SOURCETYPE}\", \"source\": \"${SPLUNK_SOURCE}\"}"
-          # auditSummary
-          curl -k "${SPLUNK_URI}/services/collector" \
-               -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
-               -d "{\"event\": `sed '2!d' report.json`, \"sourcetype\": \"${SPLUNK_SOURCETYPE}\", \"source\": \"${SPLUNK_SOURCE}\"}"
+          while read -r line; do
+            curl -k "${SPLUNK_URI}/services/collector" \
+                 -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
+                 -d "{\"event\": $line, \"sourcetype\": \"${SPLUNK_SOURCETYPE}\", \"source\": \"${SPLUNK_SOURCE}\"}"
+          done < report.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPLUNK_HEC_TOKEN: ${{ secrets.SPLUNK_HEC_TOKEN }}
