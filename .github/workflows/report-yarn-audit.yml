@@ -18,6 +18,7 @@ jobs:
           node-version: '14'
       - run: npm install -g yarn
       - run: |
+          # ignore exitcode: https://classic.yarnpkg.com/en/docs/cli/audit
           yarn audit --json >> report.json || true
           # auditAdvisory
           curl -k "${SPLUNK_URI}/services/collector" \
